@@ -1,24 +1,39 @@
 import { useEffect, useState } from "react";
 
-const COHORT = "2502-FTB-ET-WEB-PT"; // replace if needed
-const BASE_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/guests`;
-
-export function useGuestDetails(guestId) {
+export function useGuestDetails(id) {
   const [guest, setGuest] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!id) return;
+
     async function fetchGuest() {
       try {
-        const res = await fetch(`${BASE_URL}/${guestId}`);
-        const json = await res.json();
-        setGuest(json.data);
+        setLoading(true);
+        setError(null);
+        // Replace this URL with your real endpoint if you have one:
+        // const res = await fetch(`/api/guests/${id}`);
+        // const data = await res.json();
+        // setGuest(data);
+
+        // Temporary demo data:
+        setGuest({
+          id,
+          firstName: "Guest",
+          lastName: String(id),
+          email: `guest${id}@example.com`,
+          checkedIn: false,
+        });
       } catch (err) {
-        console.error("Failed to fetch guest details:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     }
 
-    if (guestId) fetchGuest();
-  }, [guestId]);
+    fetchGuest();
+  }, [id]);
 
   return guest;
 }
